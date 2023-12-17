@@ -1,0 +1,11 @@
+[Unit]
+Description=Archivista
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/bin/run-archivista.sh
+
+[Install]
+WantedBy=multi-user.target
+
