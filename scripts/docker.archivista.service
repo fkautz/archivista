@@ -4,7 +4,7 @@ Description=Archivista
 [Service]
 TimeoutStartSec=0
 Restart=always
-ExecStart=/usr/bin/run-archivista.sh
+ExecStart=/usr/bin/archivista.sh
 
 [Install]
 WantedBy=multi-user.target

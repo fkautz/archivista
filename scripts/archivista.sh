@@ -12,6 +12,5 @@ export ARCHIVISTA_SQL_STORE_CONNECTION_STRING="$DATABASE_USER:$DATABASE_PASSWORD
 export ARCHIVISTA_SQL_STORE_BACKEND='MYSQL'
 export ARCHIVISTA_STORAGE_BACKEND='BLOB'
 export ARCHIVISTA_BLOB_STORE_ENDPOINT='s3.amazonaws.com'
-export ARCHIVISTA_BLOB_STORE_BUCKET_NAME="hellocdkstack-archivistabucket4ebcf6df-tid7xehs2vuv"
 
-/home/ec2-user/go/bin/archivista
+/usr/bin/archivista
