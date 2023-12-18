@@ -1,10 +1,14 @@
 [Unit]
 Description=Archivista
+StartLimitIntervalSec=0
+StartLimitBurst=0
 
 [Service]
 TimeoutStartSec=0
 Restart=always
+RestartSec=10s
 ExecStart=/bin/bash -lc /usr/bin/archivista.sh
+
 
 [Install]
 WantedBy=multi-user.target
