@@ -1,0 +1,15 @@
+[Unit]
+Description=Timestamp Server
+StartLimitIntervalSec=0
+StartLimitBurst=0
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+RestartSec=10s
+ExecStart=/bin/bash -lc /usr/bin/timestamp-server.sh
+
+
+[Install]
+WantedBy=multi-user.target
+
