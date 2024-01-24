@@ -15,6 +15,7 @@
 package sqlstore
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -24,6 +25,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-sql-driver/mysql"
 	"github.com/in-toto/archivista/ent"
+
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/rds/auth"
 
 	_ "github.com/lib/pq"
 )
@@ -73,9 +77,28 @@ func NewEntClient(sqlBackend string, connectionString string, opts ...ClientOpti
 	var entDialect string
 	switch strings.ToUpper(sqlBackend) {
 	case "MYSQL":
+		cfg, err := awsconfig.LoadDefaultConfig(context.TODO())
 		dbConfig, err := mysql.ParseDSN(connectionString)
 		if err != nil {
 			return nil, fmt.Errorf("could not parse mysql connection string: %w", err)
+		}
+
+		dbUser := "clusteradmin"
+		dbEndpoint := dbConfig.Addr
+		dbName := "archivista"
+
+		authenticationToken, err := auth.BuildAuthToken(context.TODO(), dbConfig.Addr, cfg.Region, dbUser, cfg.Credentials)
+		if err != nil {
+			return nil, fmt.Errorf("could not build iam auth token", err)
+		}
+
+		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?tls=true&allowCleartextPasswords=true",
+			dbUser, authenticationToken, dbEndpoint, dbName,
+		)
+
+		dbConfig, err = mysql.ParseDSN(dsn)
+		if err != nil {
+			return nil, fmt.Errorf("could not parse final connection string: %w", err)
 		}
 
 		// this tells the go-sql-driver to parse times from mysql to go's time.Time
