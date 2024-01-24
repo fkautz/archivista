@@ -38,6 +38,7 @@ type Config struct {
 	SQLStoreMaxIdleConnections    int           `default:"10" desc:"Maximum number of connections in the idle connection pool" split_words:"true"`
 	SQLStoreMaxOpenConnections    int           `default:"100" desc:"Maximum number of open connections to the database" split_words:"true"`
 	SQLStoreConnectionMaxLifetime time.Duration `default:"3m" desc:"Maximum amount of time a connection may be reused" split_words:"true"`
+	SQLStoreAuthenticationType    string        `default:"CONNECTION_STRING" desc:"Authentication type. Options are AUTHENTICATION_STRING, IAM" split_words:"true"`
 
 	StorageBackend             string `default:"" desc:"Backend to use for attestation storage. Options are FILE, BLOB, or empty string for disabled." split_words:"true"`
 	FileServeOn                string `default:"" desc:"What address to serve files on. Only valid when using FILE storage backend." split_words:"true"`

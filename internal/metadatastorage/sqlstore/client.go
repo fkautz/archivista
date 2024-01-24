@@ -63,7 +63,7 @@ func ClientWithConnMaxLifetime(connMaxLifetime time.Duration) ClientOption {
 
 // NewEntClient creates an ent client for use in the sqlmetadata store.
 // Valid backends are MYSQL and PSQL.
-func NewEntClient(sqlBackend string, connectionString string, opts ...ClientOption) (*ent.Client, error) {
+func NewEntClient(sqlBackend string, connectionString, authentication_type string, opts ...ClientOption) (*ent.Client, error) {
 	clientOpts := &clientOptions{
 		maxIdleConns:    10,
 		maxOpenConns:    100,
@@ -83,20 +83,22 @@ func NewEntClient(sqlBackend string, connectionString string, opts ...ClientOpti
 			return nil, fmt.Errorf("could not parse mysql connection string: %w", err)
 		}
 
-		dbUser := "clusteradmin"
-		dbEndpoint := dbConfig.Addr
-		dbName := "archivista"
+		if authentication_type == "IAM" {
+			dbUser := "clusteradmin"
+			dbEndpoint := dbConfig.Addr
+			dbName := "archivista"
 
-		authenticationToken, err := auth.BuildAuthToken(context.TODO(), dbConfig.Addr, cfg.Region, dbUser, cfg.Credentials)
-		if err != nil {
-			return nil, fmt.Errorf("could not build iam auth token", err)
+			authenticationToken, err := auth.BuildAuthToken(context.TODO(), dbConfig.Addr, cfg.Region, dbUser, cfg.Credentials)
+			if err != nil {
+				return nil, fmt.Errorf("could not build iam auth token", err)
+			}
+
+			dsn = fmt.Sprintf("%s:%s@tcp(%s)/%s?tls=true&allowCleartextPasswords=true",
+				dbUser, authenticationToken, dbEndpoint, dbName,
+			)
+			dbConfig, err = mysql.ParseDSN(dsn)
 		}
 
-		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?tls=true&allowCleartextPasswords=true",
-			dbUser, authenticationToken, dbEndpoint, dbName,
-		)
-
-		dbConfig, err = mysql.ParseDSN(dsn)
 		if err != nil {
 			return nil, fmt.Errorf("could not parse final connection string: %w", err)
 		}

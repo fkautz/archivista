@@ -85,6 +85,7 @@ func main() {
 	entClient, err := sqlstore.NewEntClient(
 		cfg.SQLStoreBackend,
 		cfg.SQLStoreConnectionString,
+		cfg.SQLStoreAuthenticationType,
 		sqlstore.ClientWithMaxIdleConns(cfg.SQLStoreMaxIdleConnections),
 		sqlstore.ClientWithMaxOpenConns(cfg.SQLStoreMaxOpenConnections),
 		sqlstore.ClientWithConnMaxLifetime(cfg.SQLStoreConnectionMaxLifetime))
