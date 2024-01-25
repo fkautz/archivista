@@ -93,7 +93,7 @@ func NewEntClient(sqlBackend string, connectionString, authentication_type strin
 				return nil, fmt.Errorf("could not build iam auth token", err)
 			}
 
-			dsn = fmt.Sprintf("%s:%s@tcp(%s)/%s?tls=true&allowCleartextPasswords=true",
+			dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?tls=true&allowCleartextPasswords=true",
 				dbUser, authenticationToken, dbEndpoint, dbName,
 			)
 			dbConfig, err = mysql.ParseDSN(dsn)
