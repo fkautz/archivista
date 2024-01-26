@@ -17,6 +17,7 @@ package sqlstore
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -92,6 +93,10 @@ func NewEntClient(sqlBackend string, connectionString, authentication_type strin
 			if err != nil {
 				return nil, fmt.Errorf("could not build iam auth token", err)
 			}
+			dsn_sanitized := fmt.Sprintf("%s:[redacted]@tcp(%s)/%s?tls=true&allowCleartextPasswords=true",
+				dbUser, dbEndpoint, dbName,
+			)
+			log.Println(dsn_sanitized)
 
 			dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?tls=true&allowCleartextPasswords=true",
 				dbUser, authenticationToken, dbEndpoint, dbName,
